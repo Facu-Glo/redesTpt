@@ -30,6 +30,11 @@ Veamos gráficamente el problema.
 Pero cuando estos paquetes viajan por la red y llegan al receptor la historia es muy diferente. Noten cómo los paquetes ya no llegan de forma uniforme. Algunos llegan rápido, otros lentos, algunos incluso llegan fuera de orden.
 
 Ahora, el receptor tiene que tomar una decisión crítica: ¿cuánto tiempo espera antes de comenzar a reproducir los paquetes?
+
+>
+>Diapositiva 4
+
+
 Fíjense en estos dos escenarios:
 
 Escenario 1 - Si el receptor comienza a reproducir en el tiempo t₁:
@@ -44,6 +49,8 @@ Escenario 2 - Si espera hasta t₂:
 Todos los paquetes llegaron a tiempo
 PERO hay un retardo mucho mayor
 La conversación se siente no natural, como hablar por walkie-talkie
+
+> ( PARTE 3 )
 
 Este es el tradeoff fundamental: pérdida de paquetes versus retardo.
 
