@@ -28,9 +28,8 @@ El problema central era este: los paquetes de audio viajan por la red experiment
 Veamos gráficamente el problema.
 
 El gráfico del **emisor** (_sender_) muestra un patrón de escalera regular, con escalones de igual tamaño espaciados uniformemente:
-Figura escalonada
+
 - **¿Qué significa?** Significa que ~~el audio se está muestreando y~~ **los paquetes se generan periódicamente**.
-- ~~**Idealidad:** Esta es la naturaleza idealizada de la fuente de audio: cuando alguien está hablando (_talkspurt_), se produce un paquete cada intervalo de tiempo fijo (por ejemplo, cada 20 milisegundos). La pendiente constante de la línea de escalera indica una **tasa de generación de paquetes constante**.~~
 
 Pero cuando estos paquetes viajan por la red y llegan al receptor la historia es muy diferente.
 Los paquetes no llegan al receptor a intervalos de tiempo constantes. Esto es causado por el **retraso variable de la red** (_delay jitter_), es decir, el tiempo que tarda cada paquete en atravesar la red es aleatorio y diferente para cada paquete
@@ -39,28 +38,25 @@ Los paquetes no llegan al receptor a intervalos de tiempo constantes. Esto es ca
 
 Fíjense en estos dos escenarios:
 
-Escenario 1 - Si el receptor comienza a reproducir en el tiempo t₁:
+Escenario 1 - Si el receptor comienza a reproducir en el tiempo $t_1$:
 
 El retardo es corto
 PERO los paquetes 6, 7 y 8 todavía no llegaron 
 Esos paquetes se pierden - llegaron demasiado tarde
 El usuario escucha cortes en el audio
 
-Escenario 2 - Si espera hasta t₂:
+Escenario 2 - Si espera hasta $t_2$:
 
 Todos los paquetes llegaron a tiempo
 PERO hay un retardo mucho mayor
-La conversación se siente no natural, como hablar por walkie-talkie
-
-~~Este es el tradeoff fundamental: pérdida de paquetes versus retardo.~~
-Y acá viene lo complicado: las condiciones de la red no son constantes.
+La conversación no se siente natural.
 
 Entonces, no podemos usar un retardo fijo. Necesitamos algo que se adapte dinámicamente a estos cambios.
 Y eso nos lleva a la solución...
 
 >Diapositiva 3
 
-Pero antes, ahora que entendemos el problema del _delay jitter_, necesitamos una manera de medir y gestionar los retrasos. Para esto, el _paper_ define las variables clave utilizando la Figura 2.
+Pero antes, ahora que entendemos el problema del _delay jitter_, necesitamos una manera de medir y gestionar los retrasos. Para esto, el _paper_ define las siguientes variables.
 
 Es un diagrama de línea de tiempo para un solo paquete, el **paquete i**. Muestra el ciclo de vida de este paquete desde que se crea hasta que se reproduce,~~y define cómo se relaciona el retraso de la red con nuestra solución.~~
 
@@ -68,14 +64,17 @@ Es un diagrama de línea de tiempo para un solo paquete, el **paquete i**. Muest
 
 Estos son los tres momentos críticos en la vida de nuestro paquete:
 
+En el lado del emisor
 -  $t_i$​ (Tiempo de Generación): Es el momento en que el paquete i es creado en el **emisor**. Este es nuestro punto de partida.
-    
-- $a_i$​ (Tiempo de Llegada): Es el momento en que el paquete i llega al receptor La diferencia entre ai​ y ti​ es el retraso total de la red.
+
+por el lado del receptor:
+- $a_i$​ (Tiempo de Llegada): Es el momento en que el paquete i llega al receptor.
+La diferencia entre ai​ y ti​ es el retraso total de la red.
     
 - $p_i$​ (Tiempo de Playout): Es el momento en que el paquete i es reproducido ~~y escuchado. Este es el instante que nuestro algoritmo tiene que decidir.~~
 
-**Intervalos de Tiempo (Los Retrasos)**
-La figura desglosa el retraso total en dos componentes principales que actúan como la clave de nuestro _tradeoff_.
+~~**Intervalos de Tiempo (Los Retrasos)**
+La figura desglosa el retraso total en dos componentes principales que actúan como la clave de nuestro _tradeoff_.~~
 
 1. **$n_i$​ (Retraso de Red - _Network Delay_):**
     
@@ -88,16 +87,15 @@ La figura desglosa el retraso total en dos componentes principales que actúan c
     - Este es el tiempo que el paquete pasa **esperando en el receptor**: **pi​−ai​**.
         
     - Este es el **mecanismo de compensación**. Lo usamos para absorber la variabilidad de ni​. Un bi​ más grande significa que esperamos más, pero tenemos más margen para el _jitter_.
+
 # 3 Solución PLAYOUT ADAPTATIVO
 
 > Diapositiva 4
 
-~~Entonces la idea central es simple: en lugar de usar un retardo fijo durante toda la llamada, el receptor ajusta dinámicamente cuánto tiempo espera antes de reproducir los paquetes, adaptándose a las condiciones cambiantes de la red.~~
-
-**~~<u>La magia está en cómo estimamos cuánto debe valer $d_i$ para cada paquete.</u>~~**
+Antes de presentar los algoritmos veamos como se calculan los tiempos de reproducción.
 
 El método funciona así:
-Para el PRIMER paquete de cada talkspurt (segmento de habla):
+Para el PRIMER paquete de cada segmento de habla (talkspurt):
 
 El momento en que el paquete i es reproducido es igual a el momento en que el paquete i es emitido mas la estimacion del retardo promedio de la red  mas 4 por la estimacion de la variacion del retardo.
 
@@ -122,10 +120,10 @@ El paper evalúa cuatro algoritmos diferentes. La diferencia entre ellos está e
 
 > Diapositiva 6
 
-El valor α=0.998 se elige deliberadamente para que el algoritmo sea **extremadamente conservador**:
+El valor α=0.998 se elige deliberadamente para que el algoritmo sea **conservador**:
 
-- **Inercia Alta:** Un α tan cercano a 1 significa que la estimación actual ($\hat d_i$​) depende en un **99.8%** de la estimación anterior ($\hat d_{i−1}$​).
-- **Lenta Reacción:** El nuevo paquete que llega ($n_i$​) no influye mucho en este calculo. Esto hace que el algoritmo sea ~~increíblemente~~ **lento para adaptarse** si las condiciones de la red cambian abruptamente (por ejemplo, si el retraso promedio aumenta).
+- **Inercia Alta:** Un α tan cercano a 1 significa que la estimación promedio actual ($\hat d_i$​) depende gran parte de la estimación anterior ($\hat d_{i−1}$​).
+- **Lenta Reacción:** El nuevo paquete que llega ($n_i$​) no influye mucho en este calculo. Esto hace que el algoritmo sea  **lento para adaptarse** si las condiciones de la red cambian abruptamente (por ejemplo, si el retraso promedio aumenta).
 ---
 - ==Algoritmo 2 - Adaptación Asimétrica==
 
