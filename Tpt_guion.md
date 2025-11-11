@@ -20,7 +20,7 @@ Todos estos servicios usan variantes de los mecanismos adaptativos que vamos a v
 
 # 2 Problema a resolver
 
-¿Puede Internet, con sus retardos variables, soportar audio interactivo en tiempo real?
+~~¿Puede Internet, con sus retardos variables, soportar audio interactivo en tiempo real?~~
 El problema central era este: los paquetes de audio viajan por la red experimentando retardos diferentes e impredecibles - lo que llamamos jitter. El receptor necesita reproducir estos paquetes de forma periódica para que el audio suene bien, pero ¿cuánto tiempo debe esperar antes de reproducir cada paquete?
 
 >  Diapositiva 2 Figura 1.
@@ -28,14 +28,14 @@ El problema central era este: los paquetes de audio viajan por la red experiment
 Veamos gráficamente el problema.
 
 El gráfico del **emisor** (_sender_) muestra un patrón de escalera regular, con escalones de igual tamaño espaciados uniformemente:
-
-- **¿Qué significa?** Significa que el audio se está muestreando y **los paquetes se generan periódicamente**.
-- **Idealidad:** Esta es la naturaleza idealizada de la fuente de audio: cuando alguien está hablando (_talkspurt_), se produce un paquete cada intervalo de tiempo fijo (por ejemplo, cada 20 milisegundos). La pendiente constante de la línea de escalera indica una **tasa de generación de paquetes constante**.
+Figura escalonada
+- **¿Qué significa?** Significa que ~~el audio se está muestreando y~~ **los paquetes se generan periódicamente**.
+- **Idealidad:** Esta es la naturaleza idealizada de la fuente de audio: cuando alguien está hablando (_talkspurt_), se produce un paquete cada intervalo de tiempo fijo (por ejemplo, cada 20 milisegundos). ~~La pendiente constante de la línea de escalera indica una **tasa de generación de paquetes constante**.~~
 
 Pero cuando estos paquetes viajan por la red y llegan al receptor la historia es muy diferente.
 Los paquetes no llegan al receptor a intervalos de tiempo constantes. Esto es causado por el **retraso variable de la red** (_delay jitter_), es decir, el tiempo que tarda cada paquete en atravesar la red es aleatorio y diferente para cada paquete
 
-Ahora, el receptor tiene que tomar una decisión crítica: ¿cuánto tiempo espera antes de comenzar a reproducir los paquetes?
+~~Ahora, el receptor tiene que tomar una decisión crítica: ¿cuánto tiempo espera antes de comenzar a reproducir los paquetes?~~
 
 Fíjense en estos dos escenarios:
 
@@ -90,11 +90,11 @@ La figura desglosa el retraso total en dos componentes principales que actúan c
     - Este es el **mecanismo de compensación**. Lo usamos para absorber la variabilidad de ni​. Un bi​ más grande significa que esperamos más, pero tenemos más margen para el _jitter_.
 # 3 Solución PLAYOUT ADAPTATIVO
 
-> Diapositiva 5
+> Diapositiva 4
 
 Entonces la idea central es simple: en lugar de usar un retardo fijo durante toda la llamada, el receptor ajusta dinámicamente cuánto tiempo espera antes de reproducir los paquetes, adaptándose a las condiciones cambiantes de la red.
 
-**<u>La magia está en cómo estimamos cuánto debe valer $d_i$ para cada paquete.</u>**
+**~~<u>La magia está en cómo estimamos cuánto debe valer $d_i$ para cada paquete.</u>~~**
 
 El método funciona así:
 Para el PRIMER paquete de cada talkspurt (segmento de habla):
@@ -103,7 +103,7 @@ El momento en que el paquete i es reproducido es igual a el momento en que el pa
 
  -> Ecuación 1
 
-Una vez que el tiempo de _playout_ inicial ha sido decidido por la fórmula anterior, **el objetivo es reproducir el resto de los paquetes al mismo ritmo constante** que tenían cuando fueron generados en el emisor. Esto garantiza que la voz suene natural y fluida, sin las pausas o aceleraciones causadas por el _jitter_ de la red
+Una vez que el tiempo de _playout_ (reproducción) inicial ha sido decidido por la fórmula anterior, **el objetivo es reproducir el resto de los paquetes al mismo ritmo constante** que tenían cuando fueron generados en el emisor. Esto garantiza que la voz suene natural y fluida, sin las pausas o aceleraciones causadas por el _jitter_ de la red
 
  -> Ecuación 2
  
