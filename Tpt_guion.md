@@ -23,7 +23,7 @@ Todos estos servicios usan variantes de los mecanismos adaptativos que vamos a v
 ¿Puede Internet, con sus retardos variables, soportar audio interactivo en tiempo real?
 El problema central era este: los paquetes de audio viajan por la red experimentando retardos diferentes e impredecibles - lo que llamamos jitter. El receptor necesita reproducir estos paquetes de forma periódica para que el audio suene bien, pero ¿cuánto tiempo debe esperar antes de reproducir cada paquete?
 
-* Figura 1 en la presentación.
+>  Diapositiva 2 Figura 1.
 
 Veamos gráficamente el problema.
 
@@ -89,12 +89,12 @@ La figura desglosa el retraso total en dos componentes principales que actúan c
         
     - Este es el **mecanismo de compensación**. Lo usamos para absorber la variabilidad de ni​. Un bi​ más grande significa que esperamos más, pero tenemos más margen para el _jitter_.
 # 3 Solución PLAYOUT ADAPTATIVO
-> Diapositiva 5
 
+> Diapositiva 5
 
 Entonces la idea central es simple: en lugar de usar un retardo fijo durante toda la llamada, el receptor ajusta dinámicamente cuánto tiempo espera antes de reproducir los paquetes, adaptándose a las condiciones cambiantes de la red.
 
-La magia está en cómo estimamos cuánto debe valer dᵢ para cada paquete."
+**<u>La magia está en cómo estimamos cuánto debe valer $d_i$ para cada paquete.</u>**
 
 El método funciona así:
 Para el PRIMER paquete de cada talkspurt (segmento de habla):
@@ -116,14 +116,18 @@ $\hat v_i$ Son las estimaciones de la variación del retardo, osea que tanto cam
 El paper evalúa cuatro algoritmos diferentes. La diferencia entre ellos está en cómo calculan $\hat d_i$ (el retardo promedio estimado).
 
 ---
-- Algoritmo 1
+- ==Algoritmo 1==
+
+> Diapositiva 6
 
 El valor α=0.998 se elige deliberadamente para que el algoritmo sea **extremadamente conservador**:
 
 - **Inercia Alta:** Un α tan cercano a 1 significa que la estimación actual ($\hat d_i$​) depende en un **99.8%** de la estimación anterior ($\hat d_{i−1}$​).
 - **Lenta Reacción:** El nuevo paquete que llega ($n_i$​) no influye mucho en este calculo. Esto hace que el algoritmo sea increíblemente **lento para adaptarse** si las condiciones de la red cambian abruptamente (por ejemplo, si el retraso promedio aumenta).
 ---
-- Algoritmo 2 - Adaptación Asimétrica
+- ==Algoritmo 2 - Adaptación Asimétrica==
+
+> Diapositiva 7
 
 El problema del Algoritmo 1 (α=0.998) era que, cuando llegaba un paquete con un retraso muy alto ($n_i$​), la estimación $\hat d_i$​ era muy lenta para ajustarse. Esto causaba la pérdida de ese paquete y los siguientes.
 El Algoritmo 2 resuelve esto utilizando **dos valores diferentes para $\alpha$** al actualizar la estimación del retraso promedio $\hat d_i$​:
@@ -137,7 +141,9 @@ El Algoritmo 2 resuelve esto utilizando **dos valores diferentes para $\alpha$**
 
 ---
 
-- Algoritmo 3 - Mínimo del Talkspurt Anterior
+- ==Algoritmo 3 - Mínimo del Talkspurt Anterior==
+
+> Diapositiva 8
 
 Extremadamente simple
 Toma el retardo mínimo observado
