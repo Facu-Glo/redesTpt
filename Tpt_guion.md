@@ -2,19 +2,19 @@
 
 Diapositiva 1 -> Presentación del grupo y tema a tratar, dar contexto histórico del paper
 ## Presentación del grupo
-[Presentacion] Hola, soy López Facundo Gabriel y junto a mi compañero Rivero Julian vamos a presentar el siguiente tema: 
+[Presentacion] Hola, soy López Facundo Gabriel y junto a mi compañero Rivero Julian vamos a presentar ~~el  siguiente tema:~~ 
 Mecanismos Adaptativos de Reproducción para Aplicaciones de Audio Empaquetado en Redes de Área Amplia
 
 En esta presentación vamos a ver diferentes algoritmos de reproducción de paquetes que se utilizan en aplicaciones de audios en tiempo real.  El objetivo de estos algoritmos va a ser ajustar dinámicamente el tiempo de reproducción del audio de tal forma que una conexión inestable afecte lo menos posible la experiencia final del usuario.
 
-[Contexto del Paper] Es un paper, publicado a finales de los años 90 (1994), escrito por Ramachandran Ramjee, Jim Kurose y Don Towsley, de la Universidad de Massachusetts.
+[Contexto del Paper] ~~Es~~ un paper, publicado a finales de los años 90 (1994), escrito por Ramachandran Ramjee, Jim Kurose y Don Towsley, de la Universidad de Massachusetts.
 En esa época, el interés por las aplicaciones de audio y voz sobre IP estaba explotando, y se buscaba demostrar que el Internet de área amplia podía soportar audio interactivo de calidad.
 
 Los principios que desarrollaron estos investigadores son la base tecnológica de todas las aplicaciones de voz y video que usamos diariamente:
 
-Cada llamada de Zoom o Google Meet
+~~Cada llamada de Zoom o Google Meet
 Cada llamada de voz por WhatsApp, Telegram o Signal
-Cada stream en vivo en Twitch o YouTube
+Cada stream en vivo en Twitch o YouTube~~
 
 Todos estos servicios usan variantes de los mecanismos adaptativos que vamos a ver a continuación.
 
@@ -51,42 +51,15 @@ Todos los paquetes llegaron a tiempo
 PERO hay un retardo mucho mayor
 La conversación no se siente natural.
 
-Entonces, no podemos usar un retardo fijo. Necesitamos algo que se adapte dinámicamente a estos cambios.
-Y eso nos lleva a la solución...
+~~Entonces, no podemos usar un retardo fijo. Necesitamos algo que se adapte dinámicamente a estos cambios.
+Y eso nos lleva a la solución...~~
 
 >Diapositiva 3
 
-Pero antes, ahora que entendemos el problema del _delay jitter_, necesitamos una manera de medir y gestionar los retrasos. Para esto, el _paper_ define las siguientes variables.
+~~Pero antes, ahora que entendemos el problema del _delay jitter_, necesitamos una manera de medir y gestionar los retrasos. Para esto, el _paper_ define las siguientes variables.~~
 
-Es un diagrama de línea de tiempo para un solo paquete, el **paquete i**. Muestra el ciclo de vida de este paquete desde que se crea hasta que se reproduce,~~y define cómo se relaciona el retraso de la red con nuestra solución.~~
+~~Es un diagrama de línea de tiempo para un solo paquete, el **paquete i**. Muestra el ciclo de vida de este paquete desde que se crea hasta que se reproduce,y define cómo se relaciona el retraso de la red con nuestra solución.~~
 
-##### **Puntos Clave en el Tiempo**
-
-Estos son los tres momentos críticos en la vida de nuestro paquete:
-
-En el lado del emisor
--  $t_i$​ (Tiempo de Generación): Es el momento en que el paquete i es creado en el **emisor**. Este es nuestro punto de partida.
-
-por el lado del receptor:
-- $a_i$​ (Tiempo de Llegada): Es el momento en que el paquete i llega al receptor.
-La diferencia entre ai​ y ti​ es el retraso total de la red.
-    
-- $p_i$​ (Tiempo de Playout): Es el momento en que el paquete i es reproducido ~~y escuchado. Este es el instante que nuestro algoritmo tiene que decidir.~~
-
-~~**Intervalos de Tiempo (Los Retrasos)**
-La figura desglosa el retraso total en dos componentes principales que actúan como la clave de nuestro _tradeoff_.~~
-
-1. **$n_i$​ (Retraso de Red - _Network Delay_):**
-    
-    - Es el tiempo que el paquete pasó viajando: **ai​−ti​**.
-        
-    - Incluye el retraso de propagación constante (Dprop​) y, crucialmente, el **retraso variable en cola (vi​)**, que es el _jitter_ que queremos mitigar.
-        
-2. **$b_i$​ (Tiempo en Búfer - _Buffer Time_):**
-    
-    - Este es el tiempo que el paquete pasa **esperando en el receptor**: **pi​−ai​**.
-        
-    - Este es el **mecanismo de compensación**. Lo usamos para absorber la variabilidad de ni​. Un bi​ más grande significa que esperamos más, pero tenemos más margen para el _jitter_.
 
 # 3 Solución PLAYOUT ADAPTATIVO
 
@@ -135,9 +108,9 @@ El Algoritmo 2 trata de  resolver esto utilizando **dos valores diferentes para 
  Cuando el retardo **sube**: α = 0.75 (reacciona rápido)
  Cuando **baja**: β = 0.998002 (reacciona lento)
 
-- **Ventaja:** Resuelve el problema de la **pérdida de paquetes** causada por picos. El sistema se adapta casi instantáneamente a un empeoramiento de la red, elevando rápidamente el tiempo de _playout_ programado ( $p_i$​ ).
+~~- **Ventaja:** Resuelve el problema de la **pérdida de paquetes** causada por picos. El sistema se adapta casi instantáneamente a un empeoramiento de la red, elevando rápidamente el tiempo de _playout_ programado ( $p_i$​ ).~~
     
-- **Desventaja (Hipo):** Aunque resuelve el problema de la pérdida, el $\hat d_i​$​ **no baja lo suficientemente rápido** una vez que el pico de retraso desaparece. Esto significa que, después de un pico, el usuario está forzado a experimentar un **retraso total innecesariamente alto** durante un largo periodo de tiempo ~~hasta que la estimación $\hat d_i​$ finalmente decae lentamente.~~
+- ~~**Desventaja (Hipo):** Aunque resuelve el problema de la pérdida, el $\hat d_i​$​ **no baja lo suficientemente rápido** una vez que el pico de retraso desaparece. Esto significa que, después de un pico, el usuario está forzado a experimentar un **retraso total innecesariamente alto** durante un largo periodo de tiempo ~~hasta que la estimación $\hat d_i​$ finalmente decae lentamente.~~
 
 ---
 
