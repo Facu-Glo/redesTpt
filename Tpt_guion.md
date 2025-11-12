@@ -5,7 +5,7 @@ Diapositiva 1 -> Presentación del grupo y tema a tratar, dar contexto históric
 [Presentacion] Hola, soy López Facundo Gabriel y junto a mi compañero Rivero Julian vamos a presentar el siguiente tema: 
 Mecanismos Adaptativos de Reproducción para Aplicaciones de Audio Empaquetado en Redes de Área Amplia
 
-> **Explicacion sobre el titulo del paper** 
+En esta presentación vamos a ver diferentes algoritmos de reproducción de paquetes que se utilizan en aplicaciones de audios en tiempo real.  El objetivo de estos algoritmos va a ser ajustar dinámicamente el tiempo de reproducción del audio de tal forma que una conexión inestable afecte lo menos posible la experiencia final del usuario.
 
 [Contexto del Paper] Es un paper, publicado a finales de los años 90 (1994), escrito por Ramachandran Ramjee, Jim Kurose y Don Towsley, de la Universidad de Massachusetts.
 En esa época, el interés por las aplicaciones de audio y voz sobre IP estaba explotando, y se buscaba demostrar que el Internet de área amplia podía soportar audio interactivo de calidad.
@@ -155,38 +155,32 @@ Asume que el mínimo es una buena 'línea base'
 Este es la principal contribución del paper.
 Detecta y se adapta específicamente a los 'spikes' de retardo que observaron en Internet real.
 
-# Algoritmo 4 Detección de Spikes
+# Spikes
 
-Al analizar trazas reales de tráfico de audio entre distintos sitios de Internet, los autores descubrieron un patrón recurrente que llamaron 'spikes' de retardo.
+Todos estos algoritmos iniciales no tienen en cuenta los llamados **picos de retardo**, momentos en los que los paquetes sufren un aumento brusco de demora y luego llegan casi simultáneamente, con pocos milisegundos de diferencia.
 
-* Diapositiva -> figura 5
+El **Algoritmo 1**, muy conservador, tarda demasiado en reaccionar cuando cambia la congestión de la red, **descartando muchos paquetes** por llegar tarde.
 
-Muestra el retardo de red en función del tiempo de llegada de los paquetes.
+El **Algoritmo 2** detecta rápidamente el aumento de retardo, pero luego **mantiene un retardo innecesariamente alto**, demorando en volver a la normalidad.
 
-Spike:
-Aumento súbito: El retardo salta de ~0.2 segundos a ~1.2 segundos - un aumento de 1 segundo en un instante
-Ráfaga de llegadas: Inmediatamente después, unos 50 paquetes llegan casi simultáneamente en apenas 200 milisegundos.
-En condiciones normales esperaríamos 1 paquete cada 20ms, o sea 10 paquetes en 200ms
-Retorno gradual: El retardo vuelve progresivamente a valores normales
-Este fenómeno se debe típicamente a congestión súbita en algún router del camino, seguida de un vaciado rápido de su buffer.
+El **Algoritmo 3** carece de información suficiente para detectar el estado real de la red, por lo que **no ajusta su tolerancia** y también termina descartando numerosos paquetes.
 
-Los tres primeros algoritmos no se adaptan bien a estos spikes:
-- Algoritmo 1
-Con α = 0.998, es demasiado lento para reaccionar
-Tarda muchos paquetes en subir su estimación
-Resultado: muchas pérdidas durante el spike
+Así es como **surge el Algoritmo 4**, diseñado específicamente para **reconocer y adaptarse a estos picos**, logrando una mejor calidad y menor pérdida de paquetes.
 
-- Algoritmo 2 (Mills):
-Aunque sube más rápido (α=0.75), baja muy lento (β=0.998)
-Una vez terminado el spike, mantiene el retardo alto innecesariamente
-Resultado: retardo promedio elevado
+# Algoritmo 4
 
-- Algoritmo 3 (Mínimo):
-Solo usa el mínimo del talkspurt anterior
-Si hay un spike al inicio del nuevo talkspurt, no tiene información para adaptarse
-Resultado: pérdidas impredecibles
+El algoritmo 4, tiene 2 modos:
 
----
-Algoritmo 4 -> explicar que tiene 2 modos: Normal y Impulse
--> como se detecta el spike
--> como se detecta el fin del spike
+El modo normal que es identico al algoritmo 1, pero menos conservador, con un alpha de 0.875
+
+El modo impulso, que entra luego de encontrarse con una diferencia de retardos superior a un umbral llamado spike_threshold, en el que el algoritmo sigue la curva del pico de retardo, ajustándose rápidamente a los cambios bruscos y volviendo al modo normal una vez que la red se estabiliza.
+
+# Comparacion
+
+Luego de analizar las pruebas que se encuentran en el paper, se puede observar que el algoritmo 4, que incorpora detección y seguimiento de picos de retardo, ofrece el mejor desempeño. Este enfoque logra **menor pérdida de paquetes** y **menor retardo promedio de reproducción** en comparación con los otros métodos.  
+
+# Conclusion
+
+Una adaptación rápida frente a variaciones bruscas de la red influye significativamente en la **calidad percibida del audio** por el usuario y la **interactividad** de la aplicacion. Encontrar el balance entre estos dos, es una tarea fundamental de la que se encargan los algoritmos vistos. 
+
+En particular, el algoritmo 4 demostró ofrecer los **mejores resultados**, al adaptarse eficazmente a los picos de retardo y reducir la pérdida de paquetes.
