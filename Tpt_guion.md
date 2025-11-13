@@ -10,13 +10,13 @@ En esta presentación vamos a ver diferentes algoritmos de reproducción de paqu
 [Contexto del Paper] ~~Es~~ un paper, publicado a finales de los años 90 (1994), escrito por Ramachandran Ramjee, Jim Kurose y Don Towsley, de la Universidad de Massachusetts.
 En esa época, el interés por las aplicaciones de audio y voz sobre IP estaba explotando, y se buscaba demostrar que el Internet de área amplia podía soportar audio interactivo de calidad.
 
-Los principios que desarrollaron estos investigadores son la base tecnológica de todas las aplicaciones de voz y video que usamos diariamente:
+~~Los principios que desarrollaron estos investigadores son la base tecnológica de todas las aplicaciones de voz y video que usamos diariamente:~~
 
 ~~Cada llamada de Zoom o Google Meet
 Cada llamada de voz por WhatsApp, Telegram o Signal
 Cada stream en vivo en Twitch o YouTube~~
 
-Todos estos servicios usan variantes de los mecanismos adaptativos que vamos a ver a continuación.
+~~Todos estos servicios usan variantes de los mecanismos adaptativos que vamos a ver a continuación.~~
 
 # 2 Problema a resolver
 
